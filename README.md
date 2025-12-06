@@ -17,3 +17,8 @@ PrimeForm Lab is a concept-first toolkit that accelerates blockouts, relaxes den
 ## Notes
 - Designed for Blender 3.0+ and relies only on built-in modules.
 - Operators are undo-aware and scoped to active selection wherever possible.
+
+## Installation troubleshooting
+- If you previously tried to install a broken ZIP, remove any `primeform_lab` or `anfisacatrepo*` folders from your Blender add-ons directory before reinstalling.
+- After clicking **Install**, make sure to search for "PrimeForm Lab" in the Add-ons list and enable its checkbox. If the checkbox refuses to enable, check the **Help > Toggle System Console** window for Python errors.
+- The add-on defensively clears registration state on each enable, so re-enabling after a failed attempt should not complain about already-registered classes.

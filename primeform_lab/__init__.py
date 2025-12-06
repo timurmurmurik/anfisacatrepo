@@ -33,6 +33,10 @@ classes = []
 
 
 def register():
+    # Defensive reset so repeated enable attempts (after a failed install, for example)
+    # do not leave stale classes that would cause "already registered" errors.
+    classes.clear()
+
     for module in modules:
         if hasattr(module, "register"):
             module.register(classes)
