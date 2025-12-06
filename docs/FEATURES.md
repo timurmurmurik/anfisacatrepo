@@ -2,6 +2,10 @@
 
 This document summarizes the planned systems for the mod and how the Java scaffolding will evolve.
 
+## Compatibility
+- **Minecraft**: 1.20.1
+- **Loader**: Fabric (Fabric API); Architectury kept in mind for potential Forge backport, but no Forge code yet.
+
 ## Thermofluid capability
 - **State**: pressure (bar), temperature (K), volume (mB), and fluid identity.
 - **Handlers**: pipes, buffers, and machines expose a `ThermoFluidHandler` interface to allow pressure equalization and heat transfer.

@@ -2,6 +2,8 @@
 
 This repository contains the initial scaffolding and design notes for **Aethra Engines**, a Create-inspired Minecraft mod that focuses on thermodynamics, pressure, and fluid logistics.
 
+> Target platform: **Minecraft 1.20.1 on Fabric**. The code and APIs here assume Fabric loader + Fabric API (with Architectury considered for future multi-loader support).
+
 ## Goals
 - Modular machines driven by pressure and temperature instead of traditional power systems.
 - Rich fluid simulation with heat exchange, viscosity, and material-dependent pipes.
