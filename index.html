@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ЖК «Волна» — жизнь в движении</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <canvas id="wave-canvas" aria-hidden="true"></canvas>
+  <header class="topbar" id="topbar">
+    <div class="logo">ЖК <span>Волна</span></div>
+    <nav>
+      <a href="#concept">Концепция</a>
+      <a href="#apartments">Квартиры</a>
+      <a href="#amenities">Инфраструктура</a>
+      <a href="#location">Локация</a>
+      <a href="#contact">Связаться</a>
+    </nav>
+    <button class="cta" data-scroll="#contact">Записаться на просмотр</button>
+  </header>
+
+  <section class="hero" id="concept">
+    <div class="hero__content">
+      <p class="pill">Уфа · набережная Белой</p>
+      <h1>Жизнь, которая движется как волна</h1>
+      <p class="lede">Премиальный жилой комплекс на первой линии. Панорамные окна, умные общественные пространства и приватные набережные — все, чтобы вы чувствовали плавный ритм города и природы.</p>
+      <div class="hero__cta">
+        <button class="cta" data-scroll="#apartments">Выбрать квартиру</button>
+        <button class="ghost" data-scroll="#location">Посмотреть окружение</button>
+      </div>
+      <div class="hero__stats">
+        <div><span>12</span> авторских домов</div>
+        <div><span>2</span> минуты до парка</div>
+        <div><span>3</span> частные набережные</div>
+        <div><span>24/7</span> сервис-рецепция</div>
+      </div>
+    </div>
+    <div class="hero__visual">
+      <div class="bubble bubble--1"></div>
+      <div class="bubble bubble--2"></div>
+      <div class="bubble bubble--3"></div>
+      <div class="hero__card">
+        <p class="eyebrow">Pulse-панорама</p>
+        <h3>Закаты над рекой из каждой второй квартиры</h3>
+        <p>Фасады волнообразной формы раскрывают вид на Белую и центр Уфы.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="grid" id="apartments">
+    <div class="grid__header">
+      <p class="pill">Коллекция планировок</p>
+      <h2>Квартиры, созданные для гибкости</h2>
+      <p>От камерных студий до пентхаусов с собственными террасами. Трансформируемые зоны, места для хранения, теплые лоджии и премиальная отделка «под ключ».</p>
+    </div>
+    <div class="apartments">
+      <article class="card" data-category="studio">
+        <div class="tag">Студия</div>
+        <h3>38 м² · Волновой свет</h3>
+        <p>Открытая кухня-гостиная с панорамой на реку, ниша под шкаф и тёплый балкон.</p>
+        <ul>
+          <li>Функциональная гардеробная</li>
+          <li>Система «умный дом»</li>
+          <li>Высота потолков 3,1 м</li>
+        </ul>
+        <button class="ghost" data-scroll="#contact">Запросить PDF</button>
+      </article>
+      <article class="card" data-category="family">
+        <div class="tag">Семейный формат</div>
+        <h3>78 м² · Семейная волна</h3>
+        <p>Две спальни, изолированная кухня и просторная гостиная с видом на центральную аллею.</p>
+        <ul>
+          <li>Лаунж-лоджия 8 м²</li>
+          <li>Два санузла</li>
+          <li>Отдельная постирочная</li>
+        </ul>
+        <button class="ghost" data-scroll="#contact">Забронировать</button>
+      </article>
+      <article class="card" data-category="penthouse">
+        <div class="tag">Пентхаус</div>
+        <h3>145 м² · Волна Signature</h3>
+        <p>Двухуровневое пространство с приватной террасой, камином и лифтом в квартиру.</p>
+        <ul>
+          <li>Панорамные окна 6 м</li>
+          <li>Сауна и спа-зона</li>
+          <li>Система очистки воздуха</li>
+        </ul>
+        <button class="ghost" data-scroll="#contact">Назначить визит</button>
+      </article>
+    </div>
+  </section>
+
+  <section class="amenities" id="amenities">
+    <div class="amenities__intro">
+      <p class="pill">Инфраструктура</p>
+      <h2>Приватные сервисы уровня бутик-отеля</h2>
+      <p>Живите в комплексе, где ритм волны задают технологии и забота: фитнес, детский клуб, созерцательные сады, гастрономическая улица и закрытые набережные.</p>
+      <div class="filters" role="tablist">
+        <button class="filter active" data-filter="all" role="tab">Все</button>
+        <button class="filter" data-filter="wellness" role="tab">Wellness</button>
+        <button class="filter" data-filter="kids" role="tab">Дети</button>
+        <button class="filter" data-filter="business" role="tab">Бизнес</button>
+      </div>
+    </div>
+    <div class="amenities__list" aria-live="polite">
+      <article class="card amenity" data-category="wellness">
+        <div class="tag">Wellness</div>
+        <h3>Фитнес-волна 24/7</h3>
+        <p>Зона свободных весов, сайкл, студия йоги и бассейн с гидромассажными дорожками.</p>
+      </article>
+      <article class="card amenity" data-category="kids">
+        <div class="tag">Kids</div>
+        <h3>Детский клуб «Прилив»</h3>
+        <p>Тьюторы, коворкинг для уроков, пространство для STEM-проектов и сенсорная комната.</p>
+      </article>
+      <article class="card amenity" data-category="business">
+        <div class="tag">Business</div>
+        <h3>Wave Office</h3>
+        <p>Закрытые переговорные, звукоизолированные капсулы и медиа-студия для созвонов.</p>
+      </article>
+      <article class="card amenity" data-category="wellness">
+        <div class="tag">Wellness</div>
+        <h3>Спа и термальная зона</h3>
+        <p>Хаммам, сауна, авторские массажи, соляная комната и ледяные чаши.</p>
+      </article>
+      <article class="card amenity" data-category="business">
+        <div class="tag">Service</div>
+        <h3>Консьерж-команда</h3>
+        <p>Бронирование ресторанов, логистика, room-service от ресторанов квартала.</p>
+      </article>
+      <article class="card amenity" data-category="kids">
+        <div class="tag">Play</div>
+        <h3>Приватные дворы</h3>
+        <p>Ландшафт с холмами, безопасное покрытие, интерактивные световые игры и тихие зоны.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="panorama" id="location">
+    <div class="panorama__content">
+      <p class="pill">Локация</p>
+      <h2>Первая линия набережной</h2>
+      <p>«Волна» формирует новую городскую набережную: три прогулочных маршрута, пирс для сапбордов и арт-инсталляции. 7 минут до исторического центра и 12 минут до аэропорта.</p>
+      <ul class="panorama__facts">
+        <li><span>3</span> минуты до парка «Волна»</li>
+        <li><span>8</span> ресторанов и гастробаров</li>
+        <li><span>2</span> школы и детские сады в шаге</li>
+      </ul>
+      <div class="panorama__actions">
+        <button class="cta" data-scroll="#contact">Записаться в шоу-рум</button>
+        <button class="ghost" data-scroll="#timeline">Посмотреть ход строительства</button>
+      </div>
+    </div>
+    <div class="panorama__map">
+      <div class="map-widget">
+        <p class="eyebrow">Онлайн-карта</p>
+        <h3>Белая · Набережная</h3>
+        <p>Точный адрес: ул. Волновая, 7. Прогулки вдоль воды, кафе и спортивные маршруты.</p>
+        <div class="map-placeholder">wave-map</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="timeline" id="timeline">
+    <div class="timeline__intro">
+      <p class="pill">Ход строительства</p>
+      <h2>Вдохновляющий ритм прогресса</h2>
+      <p>Онлайн-лента показывает каждый этап: от свай до готовых фасадов. Обновляется еженедельно.</p>
+    </div>
+    <div class="timeline__track">
+      <article class="milestone active" data-date="II квартал 2024">
+        <h3>Фасады первой линии</h3>
+        <p>Завершены волновые фасады с подсветкой, установлены панели шумоподавления.</p>
+      </article>
+      <article class="milestone" data-date="III квартал 2024">
+        <h3>Внутренние дворы</h3>
+        <p>Сформированы холмы, высажены сосны, настроено архитектурное освещение.</p>
+      </article>
+      <article class="milestone" data-date="IV квартал 2024">
+        <h3>Интерьеры лобби</h3>
+        <p>Лобби с искусством локальных художников, акустические панели и дизайнерская мебель.</p>
+      </article>
+      <article class="milestone" data-date="I квартал 2025">
+        <h3>Сдача и заселение</h3>
+        <p>Финальные проверки, подключение сервисов и персональный консьерж каждому резиденту.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <div class="contact__info">
+      <p class="pill">Личный визит</p>
+      <h2>Запишитесь на просмотр шоу-рума</h2>
+      <p>Мы подберем планировку, покажем панораму с нужного этажа и расскажем о сервисах «Волны».</p>
+      <ul class="contact__channels">
+        <li><strong>+7 (347)</strong> 123-45-67</li>
+        <li>Ежедневно 10:00–21:00</li>
+        <li>ул. Волновая, 7, шоу-рум</li>
+      </ul>
+    </div>
+    <form class="contact__form" novalidate>
+      <label>Имя
+        <input type="text" name="name" placeholder="Как к вам обращаться" required>
+      </label>
+      <label>Телефон
+        <input type="tel" name="phone" placeholder="+7" required pattern="^[+0-9\s()-]{6,}$">
+      </label>
+      <label>Формат
+        <select name="format">
+          <option>Студия</option>
+          <option>2 спальни</option>
+          <option>Пентхаус</option>
+        </select>
+      </label>
+      <label>Комментарий
+        <textarea name="comment" rows="3" placeholder="Укажите желаемый срок визита"></textarea>
+      </label>
+      <div class="consent">
+        <input type="checkbox" id="consent" required>
+        <label for="consent">Согласен на обработку персональных данных</label>
+      </div>
+      <button class="cta" type="submit">Записаться</button>
+      <p class="form__status" aria-live="polite"></p>
+    </form>
+  </section>
+
+  <footer class="footer">
+    <div>
+      <p class="logo">ЖК <span>Волна</span></p>
+      <p>Девелопер «Ритм» · Проектная декларация на сайте нашволна.рф</p>
+    </div>
+    <div class="footer__links">
+      <a href="#concept">Концепция</a>
+      <a href="#amenities">Сервисы</a>
+      <a href="#timeline">Строительство</a>
+      <a href="#contact">Контакты</a>
+    </div>
+    <div class="footer__badge">Энергия воды, архитектура будущего</div>
+  </footer>
+
+  <script src="scripts.js"></script>
+</body>
+</html>
