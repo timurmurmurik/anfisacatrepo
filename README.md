@@ -4,6 +4,10 @@ This repository contains the initial scaffolding and design notes for **Aethra E
 
 > Target platform: **Minecraft 1.20.1 on Fabric**. The code and APIs here assume Fabric loader + Fabric API (with Architectury considered for future multi-loader support).
 
+## Current status
+- **Not playable yet.** Only design docs and Java scaffolding exist; no registries, assets, networking, or block entities are implemented.
+- **No build system committed.** A Gradle Fabric project (producing a `.jar`) still needs to be scaffolded; the current files are raw Java stubs to outline APIs.
+
 ## Goals
 - Modular machines driven by pressure and temperature instead of traditional power systems.
 - Rich fluid simulation with heat exchange, viscosity, and material-dependent pipes.
@@ -23,6 +27,9 @@ This repository contains the initial scaffolding and design notes for **Aethra E
 3. Add block entities for pipes, turbines, and generators with data-driven tuning.
 4. Integrate automation (sensors, regulators, PID controllers) and visualization widgets.
 5. Populate world generation and progression, then balance with recipes and hazards.
+
+## Building (coming soon)
+A standard Fabric Gradle build will output a `.jar` distributable. Until the Gradle files are added, only source stubs are present.
 
 ## License
 MIT (placeholder).

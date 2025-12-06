@@ -1,6 +1,7 @@
 # Aethra Engines Feature Outline
 
-This document summarizes the planned systems for the mod and how the Java scaffolding will evolve.
+This document summarizes the planned systems for the mod and how the Java scaffolding will evolve. The mod is not playable yet;
+there is no Gradle build or registered content.
 
 ## Compatibility
 - **Minecraft**: 1.20.1
