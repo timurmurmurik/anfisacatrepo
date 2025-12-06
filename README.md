@@ -1,0 +1,19 @@
+# PrimeForm Lab (Blender Add-on)
+
+PrimeForm Lab is a concept-first toolkit that accelerates blockouts, relaxes dense meshes without crushing silhouettes, and aligns UV flow for brush-friendly gradients.
+
+## Features
+- **Generative Block Scatter:** spawn a cluster of view-oriented block shapes with golden-ratio-biased proportions to explore silhouettes in seconds.
+- **Silhouette-Safe Relax:** iterative Laplacian relax that pins borders by default and blends toward the original volume to avoid shrinkage; pins UVs to stabilize texture paint.
+- **Flow Align UVs:** rotates each UV island to its dominant axis and normalizes scale for cleaner directional painting and decals.
+
+## Usage
+1. Install the folder `primeform_lab` as a Blender add-on (`Edit > Preferences > Add-ons > Install`).
+2. Open the **PrimeForm** tab in the 3D Viewport sidebar.
+3. Run **Generative Block Scatter** to create a design scaffold, then sculpt or boolean against it.
+4. Enter **Edit Mode** and use **Silhouette-Safe Relax** on dense selections.
+5. With UVs visible in Edit Mode, use **Flow Align UVs** to tidy UV direction before texturing.
+
+## Notes
+- Designed for Blender 3.0+ and relies only on built-in modules.
+- Operators are undo-aware and scoped to active selection wherever possible.
