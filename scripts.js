@@ -18,14 +18,17 @@ function drawWaves(time) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   const amplitude = 18;
   const baseY = canvas.height * 0.6;
-  const speed = 0.0025;
+  const t = time * 0.0012;
+  const speed = 0.55;
+  const frequency = 0.012;
   const colors = ['rgba(61,213,255,0.14)', 'rgba(123,157,255,0.14)', 'rgba(61,213,255,0.08)'];
 
   colors.forEach((color, i) => {
     ctx.beginPath();
     ctx.moveTo(0, baseY);
     for (let x = 0; x <= canvas.width; x += 12) {
-      const y = baseY + Math.sin((x + time * (i + 1) * 40) * speed) * amplitude * (1 + i * 0.3);
+      const phase = t * speed * (1 + i * 0.25);
+      const y = baseY + Math.sin(x * frequency + phase) * amplitude * (1 + i * 0.25);
       ctx.lineTo(x, y);
     }
     ctx.lineTo(canvas.width, canvas.height);
