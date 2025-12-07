@@ -25,6 +25,16 @@ PROMPT_SYSTEM = os.getenv(
 )
 DB_PATH = os.getenv("DB_PATH", "bot_data.db")
 AUTO_REPLY_DEFAULT = bool(int(os.getenv("AUTO_REPLY_DEFAULT", "1")))
+LLM_KEY_WARNING = None
+
+if LLM_API_KEY and not LLM_API_KEY.startswith("sk-"):
+    LLM_KEY_WARNING = (
+        "LLM_API_KEY не похож на ключ OpenAI (ожидаем формат sk-...). "
+        "Используйте OpenAI-совместимый ключ или оставьте переменную пустой — "
+        "тогда бот вернётся к шаблонным ответам."
+    )
+    print(f"⚠️  {LLM_KEY_WARNING}")
+    LLM_API_KEY = None
 
 if not TELEGRAM_TOKEN:
     raise RuntimeError("TELEGRAM_TOKEN is required in .env")
