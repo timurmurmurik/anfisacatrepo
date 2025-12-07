@@ -136,6 +136,10 @@ bot_data.db            — база SQLite с переписками (созда
 
 - «`Unauthorized`»: проверьте `TELEGRAM_TOKEN`.
 - «`401 from OpenAI`»: неправильный `LLM_API_KEY` или модель.
+- «`ModuleNotFoundError: No module named 'aiogram'` при `python bot.py`»: значит библиотеки не установились. Убедитесь, что вы
+  в активированном окружении (`.venv\Scripts\activate` на Windows, `source .venv/bin/activate` на macOS/Linux), затем заново
+  выполните `pip install -r requirements.txt`. Если во время установки просит Rust/Cargo или пишет про `pydantic_core`,
+  поставьте **Python 3.11 или 3.12**, удалите папку `.venv`, создайте окружение заново и повторите установку.
 - Бот молчит: убедитесь, что процесс запущен и интернет есть; в Windows проверьте фаервол.
 
 ## Безопасность
