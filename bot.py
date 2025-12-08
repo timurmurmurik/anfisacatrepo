@@ -11,14 +11,17 @@ from aiogram.filters import CommandStart
 from aiogram.types import Message
 from dotenv import load_dotenv
 from openai import OpenAI
-import google.generativeai as genai
 
 load_dotenv()
 
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 LLM_API_KEY = os.getenv("LLM_API_KEY")
-LLM_PROVIDER = os.getenv("LLM_PROVIDER")
 LLM_MODEL = os.getenv("LLM_MODEL")
+OPENROUTER_SITE_URL = os.getenv(
+    "OPENROUTER_SITE_URL",
+    "https://example.com/your-landing",
+)
+OPENROUTER_APP_NAME = os.getenv("OPENROUTER_APP_NAME", "Volna Bot")
 PROMPT_SYSTEM = os.getenv(
     "PROMPT_SYSTEM",
     "Ты — вежливый помощник ЖК \"Волна\" в Уфе."
@@ -30,31 +33,16 @@ AUTO_REPLY_DEFAULT = bool(int(os.getenv("AUTO_REPLY_DEFAULT", "1")))
 LLM_KEY_WARNING = None
 
 
-def detect_provider() -> str:
-    if LLM_PROVIDER:
-        return LLM_PROVIDER.lower()
-    if LLM_API_KEY:
-        if LLM_API_KEY.startswith("sk-"):
-            return "openai"
-        if LLM_API_KEY.startswith("AIza"):
-            return "gemini"
-    return ""
-
-
-DETECTED_PROVIDER = detect_provider()
-
-if LLM_API_KEY and not DETECTED_PROVIDER:
+if LLM_API_KEY and not LLM_API_KEY.startswith("sk-or-"):
     LLM_KEY_WARNING = (
-        "LLM_API_KEY не похож ни на ключ OpenAI (sk-...), ни на Gemini (AIza...). "
-        "Бот переключится на шаблонные ответы."
+        "LLM_API_KEY не похож на ключ OpenRouter (sk-or-...)."
+        " Бот переключится на шаблонные ответы."
     )
     print(f"⚠️  {LLM_KEY_WARNING}")
     LLM_API_KEY = None
 
-if DETECTED_PROVIDER == "gemini" and not LLM_MODEL:
-    LLM_MODEL = "gemini-1.5-flash"
-elif DETECTED_PROVIDER == "openai" and not LLM_MODEL:
-    LLM_MODEL = "gpt-4o-mini"
+if not LLM_MODEL:
+    LLM_MODEL = "tng/deepseek-r1t2-chimera-free"
 
 if not TELEGRAM_TOKEN:
     raise RuntimeError("TELEGRAM_TOKEN is required in .env")
@@ -187,40 +175,20 @@ def format_fallback_reply(user_message: str) -> str:
     )
 
 
-_gemini_model = None
-
-
 def llm_reply(user_id: int, user_message: str) -> str:
     if not LLM_API_KEY:
         return format_fallback_reply(user_message)
 
     history = get_last_messages(user_id)
 
-    if DETECTED_PROVIDER == "gemini":
-        global _gemini_model
-        if _gemini_model is None:
-            genai.configure(api_key=LLM_API_KEY)
-            _gemini_model = genai.GenerativeModel(
-                model_name=LLM_MODEL,
-                system_instruction=PROMPT_SYSTEM,
-            )
-
-        history_payload = []
-        for direction, text in history:
-            role = "user" if direction == "in" else "model"
-            history_payload.append({"role": role, "parts": [text]})
-
-        chat = _gemini_model.start_chat(history=history_payload)
-        response = chat.send_message(
-            user_message,
-            generation_config={
-                "temperature": 0.4,
-                "max_output_tokens": 300,
-            },
-        )
-        return response.text.strip()
-
-    client = OpenAI(api_key=LLM_API_KEY)
+    client = OpenAI(
+        api_key=LLM_API_KEY,
+        base_url="https://openrouter.ai/api/v1",
+        default_headers={
+            "HTTP-Referer": OPENROUTER_SITE_URL,
+            "X-Title": OPENROUTER_APP_NAME,
+        },
+    )
     prompt_messages = build_prompt(history + [("in", user_message)])
     response = client.chat.completions.create(
         model=LLM_MODEL,
