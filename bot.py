@@ -1,9 +1,11 @@
 import asyncio
 import os
 import sqlite3
+import uuid
 from contextlib import closing
 from typing import List, Tuple
 
+import requests
 from aiogram import Bot, Dispatcher, F
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
@@ -15,6 +17,7 @@ from openai import OpenAI
 load_dotenv()
 
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
+LLM_PROVIDER = os.getenv("LLM_PROVIDER", "openrouter").lower()
 LLM_API_KEY = os.getenv("LLM_API_KEY")
 LLM_MODEL = os.getenv("LLM_MODEL")
 OPENROUTER_SITE_URL = os.getenv(
@@ -22,6 +25,11 @@ OPENROUTER_SITE_URL = os.getenv(
     "https://example.com/your-landing",
 )
 OPENROUTER_APP_NAME = os.getenv("OPENROUTER_APP_NAME", "Volna Bot")
+GIGACHAT_AUTH_BASIC = os.getenv("GIGACHAT_AUTH_BASIC")
+GIGACHAT_SCOPE = os.getenv("GIGACHAT_SCOPE", "GIGACHAT_API_PERS")
+GIGACHAT_MODEL = os.getenv("GIGACHAT_MODEL", "GigaChat")
+GIGACHAT_RQUID = os.getenv("GIGACHAT_RQUID", str(uuid.uuid4()))
+GIGACHAT_VERIFY = os.getenv("GIGACHAT_VERIFY", "1")
 PROMPT_SYSTEM = os.getenv(
     "PROMPT_SYSTEM",
     "Ты — вежливый помощник ЖК \"Волна\" в Уфе."
@@ -48,16 +56,55 @@ def _ascii_safe(value: str, fallback: str) -> str:
         return fallback
 
 
-if LLM_API_KEY and not LLM_API_KEY.startswith("sk-or-"):
-    LLM_KEY_WARNING = (
-        "LLM_API_KEY не похож на ключ OpenRouter (sk-or-...)."
-        " Бот переключится на шаблонные ответы."
-    )
-    print(f"⚠️  {LLM_KEY_WARNING}")
-    LLM_API_KEY = None
+def _gigachat_verify_value():
+    normalized = str(GIGACHAT_VERIFY).strip().lower()
+    if normalized in {"0", "false", "no"}:
+        return False
+    if os.path.exists(GIGACHAT_VERIFY):
+        return GIGACHAT_VERIFY
+    return True
 
-if not LLM_MODEL:
-    LLM_MODEL = "tng/deepseek-r1t2-chimera-free"
+
+def request_gigachat_token() -> str:
+    verify = _gigachat_verify_value()
+    headers = {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Accept": "application/json",
+        "RqUID": GIGACHAT_RQUID,
+        "Authorization": f"Basic {GIGACHAT_AUTH_BASIC}",
+    }
+    response = requests.post(
+        "https://ngw.devices.sberbank.ru:9443/api/v2/oauth",
+        data={"scope": GIGACHAT_SCOPE},
+        headers=headers,
+        timeout=20,
+        verify=verify,
+    )
+    response.raise_for_status()
+    token = response.json().get("access_token")
+    if not token:
+        raise RuntimeError("Gigachat не вернул access_token")
+    return token
+
+
+if LLM_PROVIDER not in {"openrouter", "gigachat"}:
+    print("⚠️  Неизвестный LLM_PROVIDER, используем openrouter.")
+    LLM_PROVIDER = "openrouter"
+
+if LLM_PROVIDER == "openrouter":
+    if LLM_API_KEY and not LLM_API_KEY.startswith("sk-or-"):
+        LLM_KEY_WARNING = (
+            "LLM_API_KEY не похож на ключ OpenRouter (sk-or-...)."
+            " Бот переключится на шаблонные ответы."
+        )
+        print(f"⚠️  {LLM_KEY_WARNING}")
+        LLM_API_KEY = None
+
+    if not LLM_MODEL:
+        LLM_MODEL = "tng/deepseek-r1t2-chimera-free"
+elif LLM_PROVIDER == "gigachat":
+    if not LLM_MODEL:
+        LLM_MODEL = GIGACHAT_MODEL
 
 if not TELEGRAM_TOKEN:
     raise RuntimeError("TELEGRAM_TOKEN is required in .env")
@@ -190,7 +237,42 @@ def format_fallback_reply(user_message: str) -> str:
     )
 
 
+def gigachat_reply(user_id: int, user_message: str) -> str:
+    token = request_gigachat_token()
+    history = get_last_messages(user_id)
+    prompt_messages = build_prompt(history + [("in", user_message)])
+
+    response = requests.post(
+        "https://gigachat.devices.sberbank.ru/api/v1/chat/completions",
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+        json={
+            "model": LLM_MODEL,
+            "messages": prompt_messages,
+            "temperature": 0.4,
+            "max_tokens": 300,
+        },
+        timeout=20,
+        verify=_gigachat_verify_value(),
+    )
+    response.raise_for_status()
+    data = response.json()
+    return data["choices"][0]["message"]["content"].strip()
+
+
 def llm_reply(user_id: int, user_message: str) -> str:
+    if LLM_PROVIDER == "gigachat":
+        if not GIGACHAT_AUTH_BASIC:
+            return format_fallback_reply(user_message)
+        try:
+            return gigachat_reply(user_id, user_message)
+        except Exception as exc:  # noqa: BLE001
+            print("⚠️  Ошибка Gigachat:", exc)
+            return format_fallback_reply(user_message)
+
     if not LLM_API_KEY:
         return format_fallback_reply(user_message)
 
