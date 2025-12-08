@@ -33,6 +33,21 @@ AUTO_REPLY_DEFAULT = bool(int(os.getenv("AUTO_REPLY_DEFAULT", "1")))
 LLM_KEY_WARNING = None
 
 
+def _ascii_safe(value: str, fallback: str) -> str:
+    """Return an ASCII-only header value to avoid httpx encoding errors."""
+    try:
+        value.encode("ascii")
+        return value
+    except UnicodeEncodeError:
+        print(
+            "⚠️  Значение содержит не-ASCII символы и будет заменено:",
+            value,
+            "→",
+            fallback,
+        )
+        return fallback
+
+
 if LLM_API_KEY and not LLM_API_KEY.startswith("sk-or-"):
     LLM_KEY_WARNING = (
         "LLM_API_KEY не похож на ключ OpenRouter (sk-or-...)."
@@ -181,12 +196,15 @@ def llm_reply(user_id: int, user_message: str) -> str:
 
     history = get_last_messages(user_id)
 
+    safe_referer = _ascii_safe(OPENROUTER_SITE_URL, "https://example.com/landing")
+    safe_title = _ascii_safe(OPENROUTER_APP_NAME, "Volna Bot")
+
     client = OpenAI(
         api_key=LLM_API_KEY,
         base_url="https://openrouter.ai/api/v1",
         default_headers={
-            "HTTP-Referer": OPENROUTER_SITE_URL,
-            "X-Title": OPENROUTER_APP_NAME,
+            "HTTP-Referer": safe_referer,
+            "X-Title": safe_title,
         },
     )
     prompt_messages = build_prompt(history + [("in", user_message)])
